@@ -1,25 +1,50 @@
 # -*- coding: utf-8 -*-
 import networkx as nx
+G = nx.DiGraph()
+NasCjelina = nx.DiGraph()
+NasTema = nx.DiGraph()
+lista =[]
+
+def nadji_subtree(node,G,razina,br):
+    if node == []: return 0
+    lista.append(node)
+    susjedi = G.neighbors(node)
+    br=br+1
+    for susjed in susjedi:
+        if susjed !=[] and susjed not in lista:
+            if razina == 0:
+                nadji_subtree(susjed,G,razina,br)
+            elif razina > 0:
+                if br < razina:
+                     nadji_subtree(susjed,G,razina,br)
+
+
 
 def import_file():
-	G = nx.DiGraph()
-	f = open('Svi.txt', 'r')
-	for line in f:
-		koncept1, veza, koncept2, nl = line.split('\t')
-		G.add_edge(koncept1,koncept2)
-	
-	roots=[n for n in G.nodes() if G.in_degree(n)==0]
-	leafs=[n for n in G.nodes() if G.out_degree(n)==0]
-	#print(roots)
-	# test = nx.dfs_tree(G, 'Leinonen')
-	# print(test.edges())
 
-	test2 = nx.shortest_path(G, roots[0], leafs[0])
-	print(test2)
+    f = open('Svi.txt', 'r')
+    for line in f:
+        koncept1, veza, koncept2, nl = line.split('\t')
+        G.add_node(koncept1)
+        G.add_node(koncept2)
+        G.add_edge(koncept1, koncept2)
+    roots=[n for n in G.nodes() if G.in_degree(n)==0]
+    leafs=[n for n in G.nodes() if G.out_degree(n)==0]
 
-	SG = G.subgraph('e-ucenje')
-	#print(SG.nodes())
+    #for susjed in G.neighbors('e-ucenje'):
+        #print("Susjedi == od", susjed, "====")
+       # print(G.neighbors(susjed))
+
+    #SG = G.subgraph('e-ucenje')
+
 
 def main():
-	import_file()
+    import_file()
+    nadji_subtree('e-ucenje',G,0,0)
+    NasCjelina = G.subgraph(lista)
+    lista.clear()
+    nadji_subtree('e-ucenje',NasCjelina,3,0)
+    NasTema=NasCjelina.subgraph(lista)
+    print(len(NasTema.nodes()))
+
 main()
