@@ -70,8 +70,4 @@ def main():
     print(len(NasTema.nodes()))
 
 if __name__ == '__main__':
-<<<<<<< HEAD
-	main()
-=======
-	main()
->>>>>>> 68c855c94a8488ca5f74d34d31564f794e53176b
+    main()
