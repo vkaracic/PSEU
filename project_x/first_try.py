@@ -6,9 +6,10 @@ G = nx.DiGraph()
 # inicijalizacija usmjerenog grafa nastavne cjeline
 NasCjelina = nx.DiGraph()
 # inicijalizacija usmjerenog grafa nastavne teme
+NastavneTeme = []
 NasTema = nx.DiGraph()
 # prazna lista u koju se dodaju elementi podstabala
-lista =[]
+lista = []
 
 
 # rekurzivna funkcija za pronalazak podstabla, ulazni parametri: 
@@ -16,7 +17,8 @@ lista =[]
 # do koje zelimo traziti podstablo (za razinu 0 uzima citavo 
 # podstablo), 
 def nadji_subtree(node,G,razina,br):
-	# base case, ako je dosao do kraja stabla vraca null
+    global brojac_dubine
+    # base case, ako je dosao do kraja stabla vraca null
     if node == []: return 0
 
     # dodaj trenutni cvor u listu
@@ -27,9 +29,8 @@ def nadji_subtree(node,G,razina,br):
     # trenutna razina (inicijalno 0) 
     br=br+1
 
-
     for susjed in susjedi:
-    	# uzima samo susjede koji postoje i nisu vec dodani u listi
+        # uzima samo susjede koji postoje i nisu vec dodani u listi
         if susjed !=[] and susjed not in lista:
 
             if razina == 0:
@@ -39,13 +40,15 @@ def nadji_subtree(node,G,razina,br):
                      nadji_subtree(susjed,G,razina,br)
 
 
+
 # importiranje datoteke citavog grafa koja je obliku Cmap propozicija:
 # koncept \t veza \t koncept\n
 def import_file():
 
-    f = open('Svi.txt', 'r')
+    f = open('test_mapa.txt', 'r')
     for line in f:
-        koncept1, veza, koncept2, nl = line.split('\t')
+        koncept1, veza, koncept2 = line.split('\t')
+        koncept2 = koncept2.strip('\n')
         G.add_node(koncept1)
         G.add_node(koncept2)
         G.add_edge(koncept1, koncept2) # potrebno povezati dva konepta da bi se dobio usmjereni graf
@@ -60,14 +63,49 @@ def import_file():
 
 
 def main():
+    global lista
+    global NastavneTeme
+    global brojac_dubine
     import_file()
-    nadji_subtree('e-ucenje',G,0,0)
+    nadji_subtree('START',G,0,0)
     NasCjelina = G.subgraph(lista)
     #print(NasCjelina.nodes())
-    #lista.clear() # dobivam error na ovome, Ivane za sto je ovo bilo?
-    nadji_subtree('e-ucenje',NasCjelina,3,0)
-    NasTema=NasCjelina.subgraph(lista)
+    lista=[] # dobivam error na ovome, Ivane za sto je ovo bilo?
+    nadji_subtree('START',NasCjelina,3,0)
+    NasTema = NasCjelina.subgraph(lista)
+    NastavneTeme.append(NasTema)
     print(len(NasTema.nodes()))
+    leaves = [n for n,d in NasTema.out_degree().items() if d==0]
+    
+    #print(leaves)
 
+##    while leaves != []:
+##            for list in leaves:
+##                lista = []
+##                brojac_dubine = 0
+##                nadji_subtree(list, NasCjelina, 3, 0)
+##                NasTema = NasCjelina.subgraph(lista)
+##                NastavneTeme.append(NasTema)
+##                print NasTema.nodes()
+##                print ""
+##                print ""
+##                leaves = [n for n,d in NasTema.out_degree().items() if d==0]
+  
+
+    
+    for i in range(len(NasTema.nodes())):
+        for list in leaves:
+            lista = []
+            brojac_dubine = 0
+            nadji_subtree(list, NasCjelina, 3, 0)
+            NasTema = NasCjelina.subgraph(lista)
+            NastavneTeme.append(NasTema)
+            print NasTema.nodes()
+            print ""
+            print ""
+            leaves = [n for n,d in NasTema.out_degree().items() if d==0]
+        
+   
+    
 if __name__ == '__main__':
     main()
