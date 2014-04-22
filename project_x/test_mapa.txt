@@ -43,3 +43,4 @@ N2	ima	T1
 N2	ima	T2
 N2	ima	T3
 P1	ima	U1
+START2	ima	X1
