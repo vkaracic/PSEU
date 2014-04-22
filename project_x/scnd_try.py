@@ -20,6 +20,7 @@ def nadji_korjen(G):
     korjen = [n for n, d in G.in_degree().items() if d==0]
     return korjen
 
+# Pronalazi cijelo podstablo danog korjena
 def nadji_cPodstablo(G, korjen):
     udG = G.to_undirected()
     nodes = nx.shortest_path(udG, korjen).keys()
