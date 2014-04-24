@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import networkx as nx
 
-
 # importiranje datoteke citavog grafa koja je obliku Cmap propozicija:
 # koncept \t veza \t koncept\n
 def ucitaj_graf():
+    rjecnik = {}
     G = nx.DiGraph() # Stvaranje strukture grafa
     f = open('test_mapa.txt', 'r')
     for line in f:
@@ -13,7 +13,8 @@ def ucitaj_graf():
         G.add_node(koncept1)
         G.add_node(koncept2)
         G.add_edge(koncept1, koncept2) # potrebno povezati dva konepta da bi se dobio usmjereni graf
-    return G
+        rjecnik[koncept1, koncept2] = veza
+    return G, rjecnik
 
 # Pronalazi sve korjene u grafu
 def nadji_korjen(G):
@@ -57,18 +58,28 @@ def nadji_jedno_podstablo(G, korjen, dubina):
 
 
 def nadji_sva_podstabla(G, korjen, dubina):
-    
+    listaGrafova = []
     pocetni_graf = nadji_jedno_podstablo(G, korjen, dubina) # trazi pocetni graf
     spremi_graf(pocetni_graf, korjen) # sprema pocetni graf u zasebnu datoteku
+
+    listaGrafova.append(pocetni_graf)
 
     listovi = [n for n,d in pocetni_graf.out_degree().items() if d==0] # trazenje listova pocetnog grafa
     for el in listovi:
         graf = nadji_jedno_podstablo(G, el, dubina)
-        spremi_graf(graf, el) # spremanje grafa u svoju datoteku
+        listaGrafova.append(graf)
+        
+        # if provjera_dubine(graf, el, dubina):
+        #     spremi_graf(graf, el) # spremanje grafa u svoju datoteku
+        # else:
+
         tmpGraf.clear() # brisanje elemenata globalnog grafa zbog sljedece iteracije
 
+    return listaGrafova
     
 
+def provjera_dubine(G, korjen, dubina):
+    pass
 
 
 
@@ -76,15 +87,20 @@ def main():
     global tmpGraf
     tmpGraf = nx.DiGraph()
 
-    G = ucitaj_graf()
+    G, rjecnik_grafa = ucitaj_graf()
     korjen0 = nadji_korjen(G)[0] # u testnoj mapi se nalaze dva korjena pa zbog toga se na kraj dodaje [1] da se uzme korjen 'START' jer ima više elemenata
     korjen1 = nadji_korjen(G)[1]
 
-    subG1 = nadji_cPodstablo(G, korjen1)
-    tmpGraf.add_node(korjen1)
+    print G.edges()
 
-    nadji_sva_podstabla(subG1, korjen1, 3)
-    
+    print rjecnik_grafa
+    # subG1 = nadji_cPodstablo(G, korjen1)
+
+    # tmpGraf.add_node(korjen1)
+
+    # tmp = nadji_sva_podstabla(subG1, korjen1, 3)
+    # print tmp
+    # tmp2 = tmp[0]
     
 
 if __name__ == '__main__':

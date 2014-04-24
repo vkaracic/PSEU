@@ -17,7 +17,7 @@ def main():
 			
 			for i in range(1, int(unos)+1): # Broj djece od 1 do unesenog broja (bolje od 0 do unosa-1)
 				djeca.append(str(slovo) + str(i)) # Dodavanje elementa u listu
-				string = '%s\tima\t%s\n' % (el, str(slovo) + str(i)) # Format stringa koji ce se upisati u propozicijsku datoteku
+				string = '%s\tima\t%s\t\n' % (el, str(slovo) + str(i)) # Format stringa koji ce se upisati u propozicijsku datoteku
 				f.write(string)
 			print djeca # Testni print liste
 		break
