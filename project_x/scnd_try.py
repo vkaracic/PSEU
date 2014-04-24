@@ -58,7 +58,7 @@ def nadji_jedno_podstablo(G, korjen, dubina):
 
 
 def nadji_sva_podstabla(G, korjen, dubina):
-    listaGrafova = []
+    listaJedinica = []
     pocetni_graf = nadji_jedno_podstablo(G, korjen, dubina) # trazi pocetni graf
     spremi_graf(pocetni_graf, korjen) # sprema pocetni graf u zasebnu datoteku
 
@@ -67,15 +67,15 @@ def nadji_sva_podstabla(G, korjen, dubina):
     listovi = [n for n,d in pocetni_graf.out_degree().items() if d==0] # trazenje listova pocetnog grafa
     for el in listovi:
         graf = nadji_jedno_podstablo(G, el, dubina)
-        listaGrafova.append(graf)
-        
+        listaJedinica.append(graf)
+        nadji_sva_podstabla(G, el, dubina)
         # if provjera_dubine(graf, el, dubina):
         #     spremi_graf(graf, el) # spremanje grafa u svoju datoteku
         # else:
 
         tmpGraf.clear() # brisanje elemenata globalnog grafa zbog sljedece iteracije
 
-    return listaGrafova
+    return listaJedinica
     
 
 def provjera_dubine(G, korjen, dubina):
